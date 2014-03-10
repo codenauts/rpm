@@ -88,9 +88,14 @@ module NewRelic
       end
 
       def merge!(other)
-        if other.is_a?(StatsHash) && other.started_at < @started_at
-          @started_at = other.started_at
+        begin
+          if other.is_a?(StatsHash) && other.started_at < @started_at
+            @started_at = other.started_at
+          end
+        rescue TypeError
+          # Ignore
         end
+
         other.each do |key,val|
           begin
             if self.has_key?(key)
